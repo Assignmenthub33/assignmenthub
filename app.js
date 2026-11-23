@@ -1,0 +1,13 @@
+const C=window.ASSIGNMENTHUB_CONFIG||{};
+const configured=C.SUPABASE_URL?.startsWith("https://")&&!C.SUPABASE_URL.includes("PASTE_")&&C.SUPABASE_ANON_KEY&&!C.SUPABASE_ANON_KEY.includes("PASTE_");
+const db=configured?supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY):null;
+let cart=[];const $=id=>document.getElementById(id);const money=n=>"₹"+Number(n).toFixed(0);
+$("year").textContent=new Date().getFullYear();
+function render(){ $("cart-count").textContent=cart.reduce((s,x)=>s+x.qty,0);$("cart-items").innerHTML=cart.length?cart.map((x,i)=>`<p class="cart-line">${x.name} × ${x.qty} <strong class="price">${money(x.price*x.qty)}</strong> <button class="remove" data-i="${i}">Remove</button></p>`).join(""):"Your cart is empty."; $("cart-total").textContent=money(cart.reduce((s,x)=>s+x.price*x.qty,0));}
+document.querySelectorAll(".add").forEach(b=>b.onclick=()=>{const x=cart.find(v=>v.id===b.dataset.id);x?x.qty++:cart.push({id:b.dataset.id,name:b.dataset.name,price:+b.dataset.price,qty:1});render();});
+$("cart-items").onclick=e=>{if(e.target.matches(".remove")){cart.splice(+e.target.dataset.i,1);render();}};
+document.querySelectorAll('[name="fulfillment"]').forEach(r=>r.onchange=()=>{$("address-wrap").hidden=r.value!=="Home Delivery";});
+$("checkout-form").onsubmit=async e=>{e.preventDefault();const m=$("checkout-message");if(!db){m.textContent="Database is not connected yet. Live orders are not enabled.";return;}if(!cart.length){m.textContent="Your cart is empty.";return;}const f=new FormData(e.target),fulfillment=f.get("fulfillment");if(fulfillment==="Home Delivery"&&!String(f.get("address")||"").trim()){m.textContent="Enter your delivery address.";return;}const payload={customer_name:f.get("customer_name"),mobile:f.get("mobile"),fulfillment,address:f.get("address"),items:cart,total:cart.reduce((s,x)=>s+x.price*x.qty,0)};const {data,error}=await db.rpc("create_customer_order",{order_payload:payload});if(error){m.textContent="Order failed: "+error.message;return;}m.textContent="Order received. Order ID: "+data;cart=[];render();e.target.reset();};
+$("writing-form").onsubmit=e=>{e.preventDefault();$("writing-message").textContent="Writing request submission will be enabled after secure database and file-storage setup. No request has been sent.";};
+$("track-form").onsubmit=async e=>{e.preventDefault();const m=$("track-message");if(!db){m.textContent="Tracking will be enabled after database setup.";return;}const f=new FormData(e.target);const {data,error}=await db.rpc("track_customer_order",{p_order_id:f.get("order_id"),p_mobile:f.get("mobile")});m.textContent=error||!data?"Order not found. Check Order ID and mobile number.":"Order status: "+data.status;};
+render();
