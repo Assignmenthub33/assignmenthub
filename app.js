@@ -1,17 +1,17 @@
 const C=window.ASSIGNMENTHUB_CONFIG||{};
 const configured=C.SUPABASE_URL?.startsWith("https://")&&!C.SUPABASE_URL.includes("PASTE_")&&C.SUPABASE_ANON_KEY&&!C.SUPABASE_ANON_KEY.includes("PASTE_");
 const db=configured?supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY):null;
-let cart=[],products=[],currentProduct=null,currentPhoto=0;
+let cart=[],products=[],currentProduct=null,currentPhoto=0,currentUser=null,deliveryAreas=[];
 const $=id=>document.getElementById(id);
 const money=n=>"₹"+Number(n||0).toFixed(0);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 $("year").textContent=new Date().getFullYear();
 
 function showPage(name){
- if(!["home","products","product-detail","writing","track","cart"].includes(name))name="home";
+ if(!["home","products","product-detail","writing","track","cart","my-orders"].includes(name))name="home";
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active-page",p.id===name));
  document.querySelectorAll("nav [data-page]").forEach(a=>a.classList.toggle("active",a.dataset.page===name));
- if(name==="cart"){ $("checkout-form").hidden=true;renderCart(); }
+ if(name==="cart"){ $("checkout-form").hidden=true;renderCart(); } if(name==="my-orders")loadMyOrders();
  history.replaceState(null,"","#"+name);window.scrollTo({top:0,behavior:"auto"});
 }
 document.querySelectorAll("[data-page]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();showPage(a.dataset.page)}));
@@ -107,26 +107,34 @@ $("cart-items").addEventListener("click",e=>{
 });
 function openCheckout(){if(!cart.length)return;$("checkout-form").hidden=false;$("checkout-form").scrollIntoView({behavior:"smooth",block:"start"});}
 $("proceed-checkout").onclick=openCheckout;$("back-to-cart").onclick=()=>$("checkout-form").hidden=true;
-document.querySelectorAll('[name="fulfillment"]').forEach(r=>r.addEventListener("change",()=>{
- const home=document.querySelector('[name="fulfillment"]:checked')?.value==="Home Delivery";
- $("address-wrap").hidden=!home;$("address-wrap").querySelector("textarea").required=home;
-}));
+async function loadDeliveryAreas(){if(!db)return;const {data,error}=await db.from("delivery_areas").select("area_name,delivery_charge").eq("active",true).order("area_name");if(error){$("checkout-message").textContent="Delivery areas unavailable: "+error.message;return;}deliveryAreas=data||[];$("delivery-area").innerHTML='<option value="">Select delivery area</option>'+deliveryAreas.map(a=>`<option value="${esc(a.area_name)}">${esc(a.area_name)} — ${money(a.delivery_charge)}</option>`).join("");}
+function updateFulfillment(){const home=document.querySelector('[name="fulfillment"]:checked')?.value==="Home Delivery";$("address-wrap").hidden=!home;$("delivery-area-wrap").hidden=!home;$("address-wrap").querySelector("textarea").required=home;$("delivery-area").required=home;$("cod-option").hidden=!home;$("store-cash-option").hidden=home;const selected=document.querySelector('[name="payment_method"]:checked');if(selected&&((home&&selected.value==="Cash at Store")||(!home&&selected.value==="Cash on Delivery")))selected.checked=false;}
+document.querySelectorAll('[name="fulfillment"]').forEach(r=>r.addEventListener("change",updateFulfillment));
+document.querySelectorAll('[name="payment_method"]').forEach(r=>r.addEventListener("change",()=>{$("upi-payment").hidden=r.value!=="UPI"||!r.checked; }));
+$("copy-upi").onclick=()=>navigator.clipboard?.writeText("8485905240@ybl").then(()=>{$("copy-upi").textContent="Copied";}).catch(()=>{});
+
 $("checkout-form").onsubmit=async e=>{
- e.preventDefault();const m=$("checkout-message");
- if(!db){m.textContent="Database is not connected. Live orders are disabled.";return;}
- if(!cart.length){m.textContent="Your cart is empty.";return;}
- const f=new FormData(e.target),fulfillment=f.get("fulfillment");
- if(!fulfillment){m.textContent="Select delivery or pickup.";return;}
- if(fulfillment==="Home Delivery"&&!String(f.get("address")||"").trim()){m.textContent="Enter your delivery address.";return;}
- const payload={customer_name:f.get("customer_name"),mobile:f.get("mobile"),fulfillment,address:f.get("address"),items:cart.map(x=>({id:x.id,qty:x.qty}))};
- const {data,error}=await db.rpc("create_customer_order",{order_payload:payload});
- if(error){m.textContent="Order failed: "+error.message;return;}
- m.textContent="Order received.\nOrder ID: "+data;cart=[];renderCart();e.target.reset();$("address-wrap").hidden=true;
+ e.preventDefault();const m=$("checkout-message");if(!db){m.textContent="Database is not connected.";return;}if(!currentUser){m.textContent="Please sign in with your email before placing an order.";showPage("home");return;}if(!cart.length){m.textContent="Your cart is empty.";return;}
+ const f=new FormData(e.target),fulfillment=f.get("fulfillment"),payment=f.get("payment_method");
+ if(!fulfillment||!payment){m.textContent="Select fulfillment and payment method.";return;}
+ if(fulfillment==="Home Delivery"&&(!String(f.get("address")||"").trim()||!f.get("delivery_area"))){m.textContent="Enter address and select delivery area.";return;}
+ if(payment==="UPI"&&!String(f.get("utr_reference")||"").trim()){m.textContent="After paying by UPI, enter your UTR / transaction ID.";return;}
+ const payload={customer_name:f.get("customer_name"),mobile:f.get("mobile"),fulfillment,address:f.get("address"),delivery_area:f.get("delivery_area"),payment_method:payment,utr_reference:f.get("utr_reference"),items:cart.map(x=>({id:x.id,qty:x.qty}))};
+ const {data,error}=await db.rpc("create_customer_order",{order_payload:payload});if(error){m.textContent="Order failed: "+error.message;return;}
+ m.textContent="Order received. Order ID: "+data+". Payment status: Pending until verified.";cart=[];renderCart();e.target.reset();$("address-wrap").hidden=true;$("delivery-area-wrap").hidden=true;$("upi-payment").hidden=true;await loadMyOrders();
 };
+
 $("writing-form").onsubmit=e=>{e.preventDefault();$("writing-message").textContent="Writing request is not enabled yet. Secure database and file storage are still required. No request has been sent.";};
 $("track-form").onsubmit=async e=>{
  e.preventDefault();const m=$("track-message");if(!db){m.textContent="Tracking is not configured.";return;}
  const f=new FormData(e.target);const {data,error}=await db.rpc("track_customer_order",{p_order_id:f.get("order_id"),p_mobile:f.get("mobile")});
  m.textContent=error||!data?"Order not found. Check Order ID and mobile number.":"Order status: "+data.status;
 };
+async function refreshAuthUI(){if(!db)return;const {data:{session}}=await db.auth.getSession();currentUser=session?.user||null;$("signed-out").hidden=!!currentUser;$("signed-in").hidden=!currentUser;if(currentUser){$("account-email").textContent=currentUser.email||"Signed in";}}
+$("email-login").onsubmit=async e=>{e.preventDefault();const email=$("customer-email").value.trim();const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true}});$("auth-message").textContent=error?error.message:"A verification code has been sent if email delivery is configured. Check your inbox.";$("email-verify").hidden=!!error;};
+$("email-verify").onsubmit=async e=>{e.preventDefault();const {error}=await db.auth.verifyOtp({email:$("customer-email").value.trim(),token:$("email-code").value.trim(),type:"email"});$("auth-message").textContent=error?error.message:"Email verified. You are signed in.";if(!error){await refreshAuthUI();await loadMyOrders();}};
+$("sign-out").onclick=async()=>{await db.auth.signOut();await refreshAuthUI();showPage("home");};
+async function loadMyOrders(){const host=$("my-orders-list");if(!db||!currentUser){host.textContent="Please sign in with your verified email to view your orders.";return;}host.textContent="Loading your orders...";const {data,error}=await db.from("orders").select("id,customer_name,total,subtotal,delivery_charge,delivery_area,fulfillment,status,payment_method,payment_status,utr_reference,items,created_at,cancelled_at,cancellation_reason").eq("customer_id",currentUser.id).order("created_at",{ascending:false});if(error){host.textContent="Could not load orders: "+error.message;return;}if(!data?.length){host.textContent="No purchase history yet.";return;}host.innerHTML=data.map(o=>{const canCancel=["New","Processing"].includes(o.status)&&(Date.now()-new Date(o.created_at).getTime())<8*3600*1000;return `<article class="order-card"><div class="order-head"><b>${esc(o.id)}</b><strong>${esc(o.status)}</strong></div><p>${new Date(o.created_at).toLocaleString()}</p><p>${(o.items||[]).map(i=>`${esc(i.name||i.id)} × ${Number(i.qty||1)} (${money(i.price)})`).join(", ")}</p><p>Fulfillment: ${esc(o.fulfillment)} · Delivery: ${money(o.delivery_charge)} · Total: <b>${money(o.total)}</b></p><p>Payment: ${esc(o.payment_method||"—")} · ${esc(o.payment_status||"Pending")}</p>${o.payment_method==="UPI"&&o.payment_status!=="Paid"?`<form class="utr-form" data-order="${esc(o.id)}"><label>UTR / Transaction ID<input name="utr" value="${esc(o.utr_reference||"")}" minlength="6" maxlength="80" required></label><button class="btn secondary">Submit UTR</button></form>`:""}${canCancel?`<form class="cancel-form" data-order="${esc(o.id)}"><label>Cancellation reason (optional)<input name="reason" maxlength="500"></label><button class="btn danger">Cancel order</button><small>Cancellation available for 8 hours after ordering.</small></form>`:""}${o.cancelled_at?`<p>Cancelled: ${new Date(o.cancelled_at).toLocaleString()} ${esc(o.cancellation_reason||"")}</p>`:""}</article>`;}).join("");}
+$("my-orders-list").addEventListener("submit",async e=>{e.preventDefault();const form=e.target;if(form.matches(".cancel-form")){const {error}=await db.rpc("cancel_customer_order",{p_order_id:form.dataset.order,p_reason:new FormData(form).get("reason")||""});$("my-orders-message").textContent=error?error.message:"Order cancelled.";await loadMyOrders();}else if(form.matches(".utr-form")){const {error}=await db.rpc("submit_customer_utr",{p_order_id:form.dataset.order,p_utr:new FormData(form).get("utr")});$("my-orders-message").textContent=error?error.message:"UTR submitted. Payment remains Pending until admin verification.";await loadMyOrders();}});
+if(db){db.auth.onAuthStateChange(()=>{setTimeout(async()=>{await refreshAuthUI();if(location.hash==="#my-orders")loadMyOrders();},0);});refreshAuthUI();loadDeliveryAreas();}
 showPage(location.hash.slice(1)||"home");renderCart();loadProducts();

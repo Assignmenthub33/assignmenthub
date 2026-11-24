@@ -11,11 +11,15 @@
   <a class="brand" href="#home" data-page="home">Assignment<span>Hub</span></a>
   <nav>
     <a href="#home" data-page="home">Home</a><a href="#products" data-page="products">Products</a>
-    <a href="#writing" data-page="writing">Writing</a><a href="#track" data-page="track">Track</a>
+    <a href="#writing" data-page="writing">Writing</a><a href="#track" data-page="track">Track</a><a href="#my-orders" data-page="my-orders">My Orders</a>
     <a href="#cart" data-page="cart">Cart <b id="cart-count">0</b></a>
   </nav>
 </header>
 <main>
+<section id="account" class="section account-strip">
+ <div id="signed-out"><strong>Customer account</strong><form id="email-login" class="inline-auth"><input id="customer-email" type="email" placeholder="Email address" required><button class="btn" type="submit">Send login code</button></form><form id="email-verify" class="inline-auth" hidden><input id="email-code" inputmode="numeric" autocomplete="one-time-code" placeholder="Email code" required><button class="btn" type="submit">Verify & sign in</button></form><p id="auth-message" class="message"></p></div>
+ <div id="signed-in" hidden><strong id="account-email"></strong> <button id="sign-out" class="btn secondary" type="button">Sign out</button></div>
+</section>
 <section id="home" class="page active-page">
   <div class="home-hero">
     <div class="home-hero-copy">
@@ -53,6 +57,7 @@
     <p class="small">Writing request submission and file storage are not enabled yet.</p><button class="btn">Request writing</button><p id="writing-message" class="message"></p>
   </form>
 </section>
+<section id="my-orders" class="page section"><p class="eyebrow">YOUR ACCOUNT</p><h2>My Orders & Purchase History</h2><p class="small">Sign in with your verified email to view your orders.</p><div id="my-orders-list">Please sign in to view your orders.</div><p id="my-orders-message" class="message"></p></section>
 <section id="track" class="page section alt"><p class="eyebrow">ORDER STATUS</p><h2>Track your order</h2>
   <form id="track-form" class="form-card"><label>Order ID<input name="order_id" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><button class="btn">Track order</button><p id="track-message" class="message"></p></form>
 </section>
@@ -63,8 +68,11 @@
   <form id="checkout-form" class="form-card checkout-card" hidden><h3>Checkout</h3><label>Full name<input name="customer_name" required></label>
   <label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><fieldset><legend>Receive order</legend>
   <label><input type="radio" name="fulfillment" value="Home Delivery" required> Home Delivery</label><label><input type="radio" name="fulfillment" value="Store Pickup"> Store Pickup</label></fieldset>
+  <label id="delivery-area-wrap" hidden>Delivery area<select name="delivery_area" id="delivery-area"><option value="">Select delivery area</option></select></label>
   <label id="address-wrap" hidden>Delivery address<textarea name="address" rows="2"></textarea></label>
-  <p class="small">Delivery charge: ₹0. Payment arrangement will be confirmed after order submission.</p>
+  <fieldset><legend>Payment method</legend><label><input type="radio" name="payment_method" value="UPI" required> PhonePe UPI</label><label id="cod-option"><input type="radio" name="payment_method" value="Cash on Delivery"> Cash on Delivery</label><label id="store-cash-option"><input type="radio" name="payment_method" value="Cash at Store"> Cash at Store</label></fieldset>
+  <div id="upi-payment" class="upi-panel" hidden><p><strong>Pay using PhonePe</strong></p><img src="phonepe-qr.png" alt="PhonePe UPI QR code" class="upi-qr"><p>UPI ID: <strong>8485905240@ybl</strong> <button type="button" class="btn secondary" id="copy-upi">Copy UPI ID</button></p><label>Transaction ID / UTR<input name="utr_reference" maxlength="80" placeholder="Enter after making payment"></label><p class="small">Payment remains Pending until admin verifies it.</p></div>
+  <p class="small">Delivery charge is calculated from the selected delivery area. Store Pickup has no delivery charge.</p>
   <button class="btn">Place order</button><button class="btn secondary" id="back-to-cart" type="button">Back to cart</button><p id="checkout-message" class="message"></p></form>
 </section>
 </main>

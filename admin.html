@@ -12,7 +12,7 @@
 <form id="product-form" class="form-card"><h3 id="product-form-title">Add new product</h3>
 <input type="hidden" id="product-id">
 <label>Product name<input id="product-name" maxlength="100" required></label>
-<label>Price (₹)<input id="product-price" type="number" min="0" step="1" required></label>
+<label>Price (₹)<input id="product-price" type="number" min="0" step="1" required></label><label>Purchase cost (₹)<input id="product-cost" type="number" min="0" step="0.01" value="0"></label>
 <label>Description<textarea id="product-description" rows="3"></textarea></label>
 <label>Product photos (select up to 4)<input id="product-image" type="file" accept="image/png,image/jpeg,image/webp" multiple></label>
 <p class="small">Select 3–4 photos together. In the file picker, hold Ctrl while clicking each photo. JPG, PNG or WebP; max 5 MB each. Selecting new photos replaces the product's current gallery.</p>
@@ -22,5 +22,8 @@
 <p id="product-message" class="message"></p></form>
 <div><h3>Current products</h3><div id="product-admin-list">Loading...</div></div>
 </div>
-<hr class="admin-divider"><div class="admin-toolbar"><h2>Orders</h2><button class="btn secondary" id="refresh-orders">Refresh orders</button></div><div id="orders">No orders loaded.</div>
+<hr class="admin-divider"><div class="admin-toolbar"><h2>Orders</h2><button class="btn secondary" id="refresh-orders">Refresh orders</button></div>
+<div class="order-tabs"><button class="btn secondary active" data-status="New">New</button><button class="btn secondary" data-status="Processing">Processing</button><button class="btn secondary" data-status="Completed">Completed</button><button class="btn secondary" data-status="Cancelled">Cancelled</button></div><div id="orders">No orders loaded.</div>
+<hr class="admin-divider"><h2>Expenses</h2><form id="expense-form" class="form-card"><label>Date<input id="expense-date" type="date" required></label><label>Category<input id="expense-category" required></label><label>Description<input id="expense-description"></label><label>Amount (₹)<input id="expense-amount" type="number" min="0.01" step="0.01" required></label><button class="btn">Add expense</button><p id="expense-message" class="message"></p></form><div id="expense-list"></div>
+<div id="report-summary" class="summary-card"></div>
 </div></section></main><script src="config.js"></script><script src="admin.js"></script></body></html>
