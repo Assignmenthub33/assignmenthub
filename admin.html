@@ -1,1 +1,25 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AssignmentHub Admin</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><main class="admin-main"><a class="brand" href="index.html">Assignment<span>Hub</span></a><section class="section"><p class="eyebrow">PRIVATE AREA</p><h1>Admin panel</h1><div id="login-panel" class="form-card"><p>Sign in with the single admin account created in Supabase.</p><label>Email<input id="email" type="email" autocomplete="username"></label><label>Password<input id="password" type="password" autocomplete="current-password"></label><button class="btn" id="login">Sign in</button><p id="admin-message" class="message"></p></div><div id="dashboard" hidden><div class="admin-toolbar"><h2>Orders</h2><button class="btn secondary" id="logout">Sign out</button></div><div id="orders">No orders loaded.</div></div></section></main><script src="config.js"></script><script src="admin.js"></script></body></html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AssignmentHub Admin</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
+<body><main class="admin-main"><a class="brand" href="index.html">Assignment<span>Hub</span></a>
+<section class="section admin-section"><p class="eyebrow">PRIVATE AREA</p><h1>Admin panel</h1>
+<div id="login-panel" class="form-card"><p>Sign in with the single admin account created in Supabase.</p>
+<label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+<button class="btn" id="login">Sign in</button><p id="admin-message" class="message"></p></div>
+<div id="dashboard" hidden>
+<div class="admin-toolbar"><h2>Manage products</h2><div><button class="btn secondary" id="refresh-products">Refresh</button><button class="btn secondary" id="logout">Sign out</button></div></div>
+<div class="admin-grid">
+<form id="product-form" class="form-card"><h3 id="product-form-title">Add new product</h3>
+<input type="hidden" id="product-id">
+<label>Product name<input id="product-name" maxlength="100" required></label>
+<label>Price (₹)<input id="product-price" type="number" min="0" step="1" required></label>
+<label>Description<textarea id="product-description" rows="3"></textarea></label>
+<label>Product image<input id="product-image" type="file" accept="image/png,image/jpeg,image/webp"></label>
+<p class="small">Upload JPG, PNG or WebP image (max 5 MB). If no new image is selected, the existing image stays.</p>
+<label class="inline"><input id="product-active" type="checkbox" checked> Show product on website</label>
+<div class="actions"><button class="btn" id="save-product">Save product</button><button class="btn secondary" id="cancel-edit" type="button">Clear</button></div>
+<p id="product-message" class="message"></p></form>
+<div><h3>Current products</h3><div id="product-admin-list">Loading...</div></div>
+</div>
+<hr class="admin-divider"><div class="admin-toolbar"><h2>Orders</h2><button class="btn secondary" id="refresh-orders">Refresh orders</button></div><div id="orders">No orders loaded.</div>
+</div></section></main><script src="config.js"></script><script src="admin.js"></script></body></html>

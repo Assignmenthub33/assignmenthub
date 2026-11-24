@@ -1,10 +1,67 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Report files, assignment files and assignment writing in Anand and Vallabh Vidyanagar, Gujarat."><title>AssignmentHub</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body>
-<header class="site-header"><a class="brand" href="#home" data-page="home">Assignment<span>Hub</span></a><nav><a href="#home" data-page="home">Home</a><a href="#products" data-page="products">Products</a><a href="#writing" data-page="writing">Writing</a><a href="#track" data-page="track">Track</a><a href="#cart" data-page="cart">Cart <b id="cart-count">0</b></a></nav></header>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Report files, assignment pages and assignment files in Anand and Vallabh Vidyanagar, Gujarat.">
+<title>AssignmentHub</title><link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="#home" data-page="home">Assignment<span>Hub</span></a>
+  <nav>
+    <a href="#home" data-page="home">Home</a><a href="#products" data-page="products">Products</a>
+    <a href="#writing" data-page="writing">Writing</a><a href="#track" data-page="track">Track</a>
+    <a href="#cart" data-page="cart">Cart <b id="cart-count">0</b></a>
+  </nav>
+</header>
 <main>
-<section id="home" class="page active-page"><div class="hero"><p class="eyebrow">ANAND · VALLABH VIDYANAGAR</p><h1>Assignments and reports,<br><span>made simpler.</span></h1><p>Order report files, assignment files or request assignment writing.</p><div class="actions"><button class="btn" data-go="products">Explore products</button><button class="btn secondary" data-go="writing">Request writing</button></div></div><section class="section"><p class="eyebrow">QUICK ACCESS</p><h2>What do you need today?</h2><div class="cards"><button class="shortcut" data-go="products"><span>REPORT FILE</span><strong>Browse Report File</strong><small>Ready-to-use report file · ₹15</small></button><button class="shortcut" data-go="products"><span>ASSIGNMENT PAGE</span><strong>Browse Assignment File</strong><small>Ready-to-use assignment file · ₹60</small></button><button class="shortcut" data-go="writing"><span>CUSTOM SERVICE</span><strong>Request Assignment Writing</strong><small>Share your topic and requirements</small></button></div></section></section>
-<section id="products" class="page section"><p class="eyebrow">SHOP</p><h2>Products</h2><div class="cards"><article class="product"><div class="product-image-placeholder">Image coming soon</div><h3>Report File</h3><p>Ready-to-use report file.</p><p class="price">₹15</p><div class="product-actions"><button class="btn add" data-id="report" data-name="Report File" data-price="15">Add to cart</button><button class="btn secondary buy-now" data-id="report" data-name="Report File" data-price="15">Buy Now</button></div></article><article class="product"><div class="product-image-placeholder">Image coming soon</div><h3>Assignment File</h3><p>Ready-to-use assignment file.</p><p class="price">₹60</p><div class="product-actions"><button class="btn add" data-id="assignment" data-name="Assignment File" data-price="60">Add to cart</button><button class="btn secondary buy-now" data-id="assignment" data-name="Assignment File" data-price="60">Buy Now</button></div></article></div><p class="small">Product images and Admin Panel product management will be added in a later step.</p></section>
-<section id="writing" class="page section alt"><p class="eyebrow">CUSTOM SERVICE</p><h2>Assignment Writing</h2><form id="writing-form" class="form-card"><label>Full name<input name="customer_name" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><label>Subject<input name="subject" required></label><label>Topic<input name="topic" required></label><label>Number of pages<input name="pages" type="number" min="1" required></label><fieldset><legend>Writing method (choose one)</legend><label><input type="radio" name="method" value="Through Reference" required> Through Reference</label><label><input type="radio" name="method" value="Through GPT"> Through GPT</label></fieldset><fieldset><legend>Pages / File (choose one)</legend><label><input type="radio" name="pages_source" value="Own Pages / File" required> Own Pages / File</label><label><input type="radio" name="pages_source" value="Owner Pages / File"> Owner Pages / File</label></fieldset><label>Delivery format<select name="format" required><option value="">Select format</option><option>Physical</option><option>PDF</option><option>Both</option></select></label><label class="inline"><input type="checkbox" name="book_write"> Book Write (optional)</label><label>Instructions<textarea name="notes" rows="3"></textarea></label><label>Reference files<input type="file" name="attachments" accept="image/*,.pdf,.doc,.docx" multiple></label><p class="small">Secure file storage is not connected yet. Writing requests are not live yet.</p><button class="btn">Request writing</button><p id="writing-message" class="message"></p></form></section>
-<section id="track" class="page section alt"><p class="eyebrow">ORDER STATUS</p><h2>Track your order</h2><form id="track-form" class="form-card"><label>Order ID<input name="order_id" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><button class="btn">Track order</button><p id="track-message" class="message"></p></form></section>
-<section id="cart" class="page section"><p class="eyebrow">YOUR ORDER</p><h2>Cart</h2><div id="cart-items">Your cart is empty.</div><div class="summary-card"><h3>Price details</h3><div class="summary-row"><span>Subtotal</span><strong id="subtotal" class="price">₹0</strong></div><div class="summary-row"><span>Delivery charge</span><strong id="delivery-charge" class="price">₹0</strong></div><div class="summary-row"><span>Discount</span><strong id="discount" class="price">₹0</strong></div><div class="summary-row grand-total"><span>Total payable</span><strong id="cart-total" class="price">₹0</strong></div><button class="btn" id="proceed-checkout">Proceed to Checkout</button></div><form id="checkout-form" class="form-card checkout-card" hidden><h3>Checkout</h3><label>Full name<input name="customer_name" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><fieldset><legend>Receive order</legend><label><input type="radio" name="fulfillment" value="Home Delivery" required> Home Delivery</label><label><input type="radio" name="fulfillment" value="Store Pickup"> Store Pickup</label></fieldset><label id="address-wrap">Delivery address<textarea name="address" rows="2" required></textarea></label><p class="small">Delivery charge: ₹0. Payment arrangement will be confirmed after order submission.</p><button class="btn">Place order</button><button class="btn secondary" id="back-to-cart" type="button">Back to cart</button><p id="checkout-message" class="message"></p></form></section>
-</main><footer>© <span id="year"></span> AssignmentHub · Anand & Vallabh Vidyanagar, Gujarat</footer><script src="config.js"></script><script src="app.js"></script></body></html>
+<section id="home" class="page active-page">
+  <div class="hero"><p class="eyebrow">ANAND · VALLABH VIDYANAGAR</p><h1>Assignments and reports,<br><span>made simpler.</span></h1>
+  <p>Order report files, assignment pages or assignment files.</p>
+  <div class="actions"><button class="btn" data-go="products">Explore products</button><button class="btn secondary" data-go="writing">Request writing</button></div></div>
+  <section class="section"><p class="eyebrow">QUICK ACCESS</p><h2>What do you need today?</h2>
+    <div class="cards">
+      <button class="shortcut" data-go="products"><span>REPORT FILE</span><strong>Browse Report File</strong><small>Ready-to-use report file · ₹15</small></button>
+      <button class="shortcut" data-go="products"><span>ASSIGNMENT PAGE</span><strong>Browse Assignment Page</strong><small>Single side · ₹60</small></button>
+      <button class="shortcut" data-go="products"><span>ASSIGNMENT FILE</span><strong>Browse Assignment File</strong><small>Double side · ₹60</small></button>
+      <button class="shortcut" data-go="writing"><span>CUSTOM SERVICE</span><strong>Request Assignment Writing</strong><small>Share your topic and requirements</small></button>
+    </div>
+  </section>
+</section>
+<section id="products" class="page section">
+  <p class="eyebrow">SHOP</p><h2>Products</h2>
+  <div id="product-list" class="cards"><p>Loading products...</p></div>
+  <p id="product-message" class="small"></p>
+</section>
+<section id="writing" class="page section alt">
+  <p class="eyebrow">CUSTOM SERVICE</p><h2>Assignment Writing</h2>
+  <form id="writing-form" class="form-card">
+    <label>Full name<input name="customer_name" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label>
+    <label>Subject<input name="subject" required></label><label>Topic<input name="topic" required></label><label>Number of pages<input name="pages" type="number" min="1" required></label>
+    <fieldset><legend>Writing method (choose one)</legend><label><input type="radio" name="method" value="Through Reference" required> Through Reference</label><label><input type="radio" name="method" value="Through GPT"> Through GPT</label></fieldset>
+    <fieldset><legend>Pages / File (choose one)</legend><label><input type="radio" name="pages_source" value="Own Pages / File" required> Own Pages / File</label><label><input type="radio" name="pages_source" value="Owner Pages / File"> Owner Pages / File</label></fieldset>
+    <label>Delivery format<select name="format" required><option value="">Select format</option><option>Physical</option><option>PDF</option><option>Both</option></select></label>
+    <label class="inline"><input type="checkbox" name="book_write"> Book Write (optional)</label><label>Instructions<textarea name="notes" rows="3"></textarea></label>
+    <label>Reference files<input type="file" name="attachments" accept="image/*,.pdf,.doc,.docx" multiple></label>
+    <p class="small">Writing request submission and file storage are not enabled yet.</p><button class="btn">Request writing</button><p id="writing-message" class="message"></p>
+  </form>
+</section>
+<section id="track" class="page section alt"><p class="eyebrow">ORDER STATUS</p><h2>Track your order</h2>
+  <form id="track-form" class="form-card"><label>Order ID<input name="order_id" required></label><label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><button class="btn">Track order</button><p id="track-message" class="message"></p></form>
+</section>
+<section id="cart" class="page section"><p class="eyebrow">YOUR ORDER</p><h2>Cart</h2><div id="cart-items">Your cart is empty.</div>
+  <div class="summary-card"><h3>Price details</h3><div class="summary-row"><span>Subtotal</span><strong id="subtotal" class="price">₹0</strong></div>
+  <div class="summary-row"><span>Delivery charge</span><strong id="delivery-charge" class="price">₹0</strong></div><div class="summary-row"><span>Discount</span><strong id="discount" class="price">₹0</strong></div>
+  <div class="summary-row grand-total"><span>Total payable</span><strong id="cart-total" class="price">₹0</strong></div><button class="btn" id="proceed-checkout">Proceed to Checkout</button></div>
+  <form id="checkout-form" class="form-card checkout-card" hidden><h3>Checkout</h3><label>Full name<input name="customer_name" required></label>
+  <label>Mobile number<input name="mobile" inputmode="numeric" pattern="[0-9]{10}" required></label><fieldset><legend>Receive order</legend>
+  <label><input type="radio" name="fulfillment" value="Home Delivery" required> Home Delivery</label><label><input type="radio" name="fulfillment" value="Store Pickup"> Store Pickup</label></fieldset>
+  <label id="address-wrap" hidden>Delivery address<textarea name="address" rows="2"></textarea></label>
+  <p class="small">Delivery charge: ₹0. Payment arrangement will be confirmed after order submission.</p>
+  <button class="btn">Place order</button><button class="btn secondary" id="back-to-cart" type="button">Back to cart</button><p id="checkout-message" class="message"></p></form>
+</section>
+</main>
+<footer>© <span id="year"></span> AssignmentHub · Anand & Vallabh Vidyanagar, Gujarat</footer>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
