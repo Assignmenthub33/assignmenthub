@@ -35,17 +35,6 @@ function productCard(p){
   </div></div></article>`;
 }
 
-function renderHomeFeatured(){
- const host=$("home-featured-list");if(!host)return;
- const featured=products.slice(0,4);
- host.innerHTML=featured.length?featured.map(productCard).join():"<p>No featured products available yet.</p>";
-}
-$("home-featured-list")?.addEventListener("click",e=>{
- const detail=e.target.closest("[data-detail]");if(detail){openProduct(detail.dataset.detail);return;}
- const b=e.target.closest("button[data-id]");if(!b)return;
- const p=products.find(x=>x.id===b.dataset.id);if(p)addProduct(p,b.classList.contains("buy-now"));
-});
-
 function renderProducts(){
  const host=$("product-list");
  if(!products.length){host.innerHTML="<p>No products are available right now.</p>";return;}
@@ -55,7 +44,7 @@ async function loadProducts(){
  if(!db){$("product-list").innerHTML="<p>Product database is not connected.</p>";return;}
  const {data,error}=await db.from("products").select("id,name,description,price,image_url,image_urls,active,sort_order").eq("active",true).order("sort_order").order("name");
  if(error){$("product-list").innerHTML="<p>Products could not load. Please refresh later.</p>";$("product-message").textContent=error.message;return;}
- products=data||[];renderProducts();renderHomeFeatured();
+ products=data||[];renderProducts();
 }
 function addProduct(p,buy=false){
  const found=cart.find(x=>x.id===p.id);

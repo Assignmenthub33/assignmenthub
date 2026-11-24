@@ -13,13 +13,24 @@ async function loadProducts(){
  productCache=data||[];
  host.innerHTML=productCache.length?productCache.map(p=>{const imgs=photos(p);return `<article class="admin-product"><div class="admin-product-thumb">${imgs[0]?`<img src="${esc(imgs[0])}" alt="">`:"No image"}<small>${imgs.length} photo(s)</small></div><div class="admin-product-info"><strong>${esc(p.name)}</strong><span class="price">${money(p.price)}</span><small>${p.active?"Visible on website":"Hidden from website"}</small><div class="actions"><button class="btn secondary edit-product" data-id="${esc(p.id)}">Edit</button><button class="btn secondary toggle-product" data-id="${esc(p.id)}">${p.active?"Hide":"Show"}</button><button class="btn danger delete-product" data-id="${esc(p.id)}">Delete</button></div></div></article>`;}).join(""):"No products found.";
 }
-function clearForm(){$("product-form").reset();$("product-id").value="";$("product-active").checked=true;$("product-form-title").textContent="Add new product";$("product-message").textContent="";}
+function renderPhotoPreview(urls=[], labels=[]){
+ const host=$("product-photo-preview");if(!host)return;
+ const entries=urls.map((url,i)=>`<div class="photo-preview-item"><img src="${esc(url)}" alt="Product photo ${i+1}"><small>Photo ${i+1}</small></div>`);
+ const names=labels.map((name,i)=>`<div class="photo-preview-item file-preview"><div class="file-placeholder">IMG</div><small>${esc(name)}</small></div>`);
+ host.innerHTML=entries.concat(names).join("")||'<span class="small">No photos selected.</span>';
+}
+function clearForm(){$("product-form").reset();$("product-id").value="";$("product-active").checked=true;$("product-form-title").textContent="Add new product";$("product-message").textContent="";renderPhotoPreview();}
 $("cancel-edit").onclick=clearForm;
+$("product-image").addEventListener("change",()=>{
+ const files=[...$("product-image").files];
+ if(files.length>4){$("product-message").textContent="Please select a maximum of 4 photos.";return;}
+ renderPhotoPreview([],files.map(f=>f.name));
+});
 $("product-admin-list").addEventListener("click",async e=>{
  const b=e.target.closest("button[data-id]");if(!b)return;const p=productCache.find(x=>x.id===b.dataset.id);if(!p)return;
  if(b.classList.contains("edit-product")){
   $("product-id").value=p.id;$("product-name").value=p.name;$("product-price").value=p.price;$("product-description").value=p.description||"";$("product-active").checked=p.active;$("product-form-title").textContent="Edit product";
-  $("product-message").textContent=`Editing: ${p.name} · ${photos(p).length} saved photo(s). Select new photos to append.`;
+  $("product-message").textContent=`Editing: ${p.name}. Select new photos to replace the current gallery.`;renderPhotoPreview(photos(p));
   window.scrollTo({top:0,behavior:"smooth"});return;
  }
  if(b.classList.contains("toggle-product")){const {error}=await db.from("products").update({active:!p.active}).eq("id",p.id);if(error)alert(error.message);else await loadProducts();return;}
@@ -33,6 +44,7 @@ $("product-form").onsubmit=async e=>{
   if(!id)id="product-"+crypto.randomUUID().slice(0,8);
   const old=productCache.find(p=>p.id===id);let image_urls=photos(old||{});const files=[...$("product-image").files];
   if(files.length>4)throw new Error("You can select up to 4 new photos at a time.");
+  if(files.length)image_urls=[];
   for(const file of files){
    if(file.size>5*1024*1024)throw new Error(`${file.name} is larger than 5 MB.`);
    if(!["image/jpeg","image/png","image/webp"].includes(file.type))throw new Error("Use JPG, PNG or WebP images only.");

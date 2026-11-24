@@ -14,8 +14,9 @@
 <label>Product name<input id="product-name" maxlength="100" required></label>
 <label>Price (₹)<input id="product-price" type="number" min="0" step="1" required></label>
 <label>Description<textarea id="product-description" rows="3"></textarea></label>
-<label>Product image<input id="product-image" type="file" accept="image/png,image/jpeg,image/webp" multiple></label>
-<p class="small">Upload up to 4 JPG, PNG or WebP photos (each max 5 MB). Existing photos stay if no new photos are selected.</p>
+<label>Product photos (select up to 4)<input id="product-image" type="file" accept="image/png,image/jpeg,image/webp" multiple></label>
+<p class="small">Select 3–4 photos together. In the file picker, hold Ctrl while clicking each photo. JPG, PNG or WebP; max 5 MB each. Selecting new photos replaces the product's current gallery.</p>
+<div id="product-photo-preview" class="photo-preview" aria-live="polite"><span class="small">No new photos selected.</span></div>
 <label class="inline"><input id="product-active" type="checkbox" checked> Show product on website</label>
 <div class="actions"><button class="btn" id="save-product">Save product</button><button class="btn secondary" id="cancel-edit" type="button">Clear</button></div>
 <p id="product-message" class="message"></p></form>
