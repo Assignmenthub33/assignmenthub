@@ -17,22 +17,31 @@
 </header>
 <main>
 <section id="home" class="page active-page">
-  <div class="hero"><p class="eyebrow">ANAND · VALLABH VIDYANAGAR</p><h1>Assignments and reports,<br><span>made simpler.</span></h1>
-  <p>Order report files, assignment pages or assignment files.</p>
-  <div class="actions"><button class="btn" data-go="products">Explore products</button><button class="btn secondary" data-go="writing">Request writing</button></div></div>
-  <section class="section"><p class="eyebrow">QUICK ACCESS</p><h2>What do you need today?</h2>
-    <div class="cards">
-      <button class="shortcut" data-go="products"><span>REPORT FILE</span><strong>Browse Report File</strong><small>Ready-to-use report file · ₹15</small></button>
-      <button class="shortcut" data-go="products"><span>ASSIGNMENT PAGE</span><strong>Browse Assignment Page</strong><small>Single side · ₹60</small></button>
-      <button class="shortcut" data-go="products"><span>ASSIGNMENT FILE</span><strong>Browse Assignment File</strong><small>Double side · ₹60</small></button>
-      <button class="shortcut" data-go="writing"><span>CUSTOM SERVICE</span><strong>Request Assignment Writing</strong><small>Share your topic and requirements</small></button>
+  <div class="home-hero">
+    <div class="home-hero-copy">
+      <p class="eyebrow">ASSIGNMENTHUB · ANAND & VALLABH VIDYANAGAR</p>
+      <h1>Your Academic Work,<br><span>Made Easier.</span></h1>
+      <p>Find report files, assignment pages and assignment files in one place. Browse products and place your order with ease.</p>
+      <div class="actions"><button class="btn" data-go="products">Explore Products</button><button class="btn secondary" data-go="writing">Request Writing</button></div>
+      <div class="hero-points"><span>✓ Easy ordering</span><span>✓ Clear pricing</span><span>✓ Local service</span></div>
     </div>
+    <div class="home-hero-art" aria-hidden="true"><div class="hero-paper paper-back"></div><div class="hero-paper paper-front"><span class="paper-mark">AH</span><strong>ASSIGNMENT<br>HUB</strong><small>REPORTS · ASSIGNMENTS</small></div><div class="hero-price">Starting at <b>₹15</b></div></div>
+  </div>
+  <section class="home-featured"><div class="section-heading"><div><p class="eyebrow">HANDPICKED FOR YOU</p><h2>Featured Products</h2></div><button class="text-link" data-go="products">View all products →</button></div>
+    <div id="home-featured-list" class="cards product-grid"><p>Loading products...</p></div>
+  </section>
+  <section class="home-benefits"><p class="eyebrow">WHY ASSIGNMENTHUB</p><h2>A simpler way to get your academic work ready.</h2>
+    <div class="benefit-grid"><article><b>01</b><h3>Browse easily</h3><p>Explore available report files and assignment products.</p></article><article><b>02</b><h3>Know the price</h3><p>See product pricing clearly before adding items to your cart.</p></article><article><b>03</b><h3>Order your way</h3><p>Choose home delivery or store pickup at checkout.</p></article></div>
   </section>
 </section>
 <section id="products" class="page section">
   <p class="eyebrow">SHOP</p><h2>Products</h2>
-  <div id="product-list" class="cards"><p>Loading products...</p></div>
+  <div id="product-list" class="cards product-grid"><p>Loading products...</p></div>
   <p id="product-message" class="small"></p>
+</section>
+<section id="product-detail" class="page section">
+  <button class="btn secondary back-products" id="back-products" type="button">← Back to Products</button>
+  <div id="product-detail-content"></div>
 </section>
 <section id="writing" class="page section alt">
   <p class="eyebrow">CUSTOM SERVICE</p><h2>Assignment Writing</h2>
