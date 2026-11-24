@@ -16,7 +16,7 @@
   </nav>
 </header>
 <main>
-<section id="account" class="section account-strip">
+<section id="account" class="section account-strip" hidden>
  <div id="signed-out"><strong>Customer account</strong><form id="email-login" class="inline-auth"><input id="customer-email" type="email" placeholder="Email address" required><button class="btn" type="submit">Send login code</button></form><form id="email-verify" class="inline-auth" hidden><input id="email-code" inputmode="numeric" autocomplete="one-time-code" placeholder="Email code" required><button class="btn" type="submit">Verify & sign in</button></form><p id="auth-message" class="message"></p></div>
  <div id="signed-in" hidden><strong id="account-email"></strong> <button id="sign-out" class="btn secondary" type="button">Sign out</button></div>
 </section>
